@@ -1,37 +1,20 @@
 ---
-import { type SpaceAPIResponse } from "../types/api.ts";
-import CardLaunch from "./CardLaunch.astro";
-const res = await fetch("https://api.spacexdata.com/v5/launches/query", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    query: {},
-    options: {
-      sort: {
-        data_unix: "asc",
-      },
-      limit: 12,
-    },
-  }),
-});
+import { getSapceXData } from '../services/spacex'
+import CardLaunch from './CardLaunch.astro'
 
-const { docs: lauches } = (await res.json()) as SpaceAPIResponse;
+const lauches = await getSapceXData()
 ---
 
 <section class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-  <article>
-    {
-      lauches.map(({ id, links, details, flight_number, success }) => 
-        <CardLaunch 
-          id={id}
-          img={links.patch.small}
-          details={details}
-          flightNumber={flight_number}
-          success={success}
-        />
-      )
-    }
-  </article>
+  {
+    lauches.map(({ id, links, details, flight_number, success }) => (
+      <CardLaunch
+        id={id}
+        img={links.patch.small}
+        details={details}
+        flightNumber={flight_number}
+        success={success}
+      />
+    ))
+  }
 </section>
