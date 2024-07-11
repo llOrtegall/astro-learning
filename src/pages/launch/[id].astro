@@ -1,8 +1,6 @@
 ---
-import { getSapceXBy } from "../../services/spacex"
+import { getSapceXBy, getSapceXData } from "../../services/spacex"
 import Layout from "../../layouts/Layout.astro";
-
-export const prerender = false
 
 const { id } = Astro.params
 
@@ -10,6 +8,14 @@ let launch
 
 if(id) { // esto funtiona solo para el servidor
   launch = await getSapceXBy({ id })
+}
+
+export async function getStaticPaths (){
+  const launches = await getSapceXData()
+  return launches.map((launch) => ({
+    params: { id: launch.id}
+  }))
+
 }
 ---
 <Layout title={`Lanzamiento ${id}`}>
